@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffd6e7, #f8b6d2);
+        }
+
+        .container {
+            width: 360px;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #d94f8a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #e98ab3;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: #e98ab3;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #d96f9e;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .register-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .register-link a {
+            color: #d94f8a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Welcome Back! 💗</h1>
+
+        <p class="subtitle">
+            Login to continue
+        </p>
+
+        <form id="loginForm">
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <p class="register-link">
+            Don't have an account?
+            <a href="register.html">Register</a>
+        </p>
+
+    </div>
+
+
+    <script>
+
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const message = document.getElementById("message");
+
+            try {
+
+                const response = await fetch("/api/login", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+
+                    // Save the username
+                    localStorage.setItem("username", data.username);
+
+                    message.style.color = "green";
+                    message.textContent = "Login successful! 💗";
+
+                    setTimeout(function() {
+                        window.location.href = "dashboard.html";
+                    }, 500);
+
+                } else {
+
+                    message.style.color = "red";
+                    message.textContent = data.message;
+
+                }
+
+            } catch (error) {
+
+                console.log(error);
+
+                message.style.color = "red";
+                message.textContent = "Something went wrong. Please try again.";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
